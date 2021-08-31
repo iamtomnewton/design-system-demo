@@ -48,7 +48,7 @@ console.log('Build started...');
 
 // PROCESS THE DESIGN CONFIG FOR THE DIFFEREN BRANDS AND PLATFORMS
 
-['brand-1', 'brand-2', 'brand-3'].map(function (brand) {
+['bilbasen', 'dba'].map(function (brand) {
   ['web', 'ios', 'android'].map(function (platform) {
 
     console.log('\n==============================================');
