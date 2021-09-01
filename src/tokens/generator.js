@@ -1,12 +1,13 @@
 const StyleDictionaryPackage = require('style-dictionary');
+const del = require('del');
 
 // HAVE THE STYLE DICTIONARY CONFIG DYNAMICALLY GENERATED
 
 function getStyleDictionaryConfig(brand, platform) {
   return {
     "source": [
-      `config/brands/${brand}/*.json`,
-      "config/globals/**/*.json",
+      `config/brand/${brand}/*.json`,
+      "config/global/**/*.json",
       `config/platforms/${platform}/*.json`
     ],
     "platforms": {
@@ -16,7 +17,10 @@ function getStyleDictionaryConfig(brand, platform) {
         "files": [{
           "destination": "config.scss",
           "format": "scss/variables"
-        }]
+        }],
+        "options": {
+          "outputReferences": true
+        }
       },
       "android": {
         "transformGroup": "android",
@@ -24,12 +28,6 @@ function getStyleDictionaryConfig(brand, platform) {
         "files": [{
           "destination": "config.colors.xml",
           "format": "android/colors"
-        }, {
-          "destination": "config.dimens.xml",
-          "format": "android/dimens"
-        }, {
-          "destination": "config.font_dimens.xml",
-          "format": "android/fontDimens"
         }]
       },
       "ios": {
@@ -46,22 +44,28 @@ function getStyleDictionaryConfig(brand, platform) {
 
 console.log('Build started...');
 
-// PROCESS THE DESIGN CONFIG FOR THE DIFFEREN BRANDS AND PLATFORMS
+// PROCESS THE DESIGN CONFIG FOR THE DIFFERENT BRANDS AND PLATFORMS
 
-['bilbasen', 'dba'].map(function (brand) {
-  ['web', 'ios', 'android'].map(function (platform) {
+(async () => {
 
+  const dir = "./dist"
+
+  try {
+    await del(dir);
+
+    console.log(`Removed ${dir} folder`);
+  } catch (err) {
+    console.error(`Error while deleting ${dir} folder`);
+  }
+  ['bilbasen', 'dba'].map(function (brand) {
     console.log('\n==============================================');
-    console.log(`\nProcessing: [${platform}] [${brand}]`);
+    console.log(`\n${brand.toUpperCase()}`);
 
-    const StyleDictionary = StyleDictionaryPackage.extend(getStyleDictionaryConfig(brand, platform));
-
-    StyleDictionary.buildPlatform(platform);
-
-    console.log('\nEnd processing');
-
+    ['web', 'ios', 'android'].map(function (platform) {
+      const StyleDictionary = StyleDictionaryPackage.extend(getStyleDictionaryConfig(brand, platform));
+      StyleDictionary.buildPlatform(platform);
+    })
   })
-})
-
-console.log('\n==============================================');
-console.log('\nBuild completed!');
+  console.log('\n==============================================');
+  console.log('\nBuild completed!\n');
+})();
