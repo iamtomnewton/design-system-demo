@@ -1,121 +1,108 @@
-const StyleDictionary = require('style-dictionary');
-const fs = require('fs-extra');
+const StyleDictionaryPackage = require('style-dictionary');
+const del = require('del');
 
-const distPath = `./dist`;
-const webPath = `./dist/web`;
-const iosPath = `./dist/ios`;
-const androidPath = `./dist/android`;
+const outputPath = `./dist`;
+const brands = [`bilbasen`, `dba`];
+const platforms = ['web', 'ios', 'android'];
+const themes = [`default`, `dark`];
+
+// HAVE THE STYLE DICTIONARY CONFIG DYNAMICALLY GENERATED
+
+function tokenConfig(theme, brand, platform) {
+
+  const routeGenerator = (theme) => theme === 'default' ? `!(*.${themes.join(`|*.`)})` : `*.${theme}`
+  const extensionGenerator = (theme) => theme === 'default' ? `` : `.${theme}`
+
+  // Include will deep merge the files only overriding the theme values
+  return {
+    "include": [
+      `config/brands/${brand}/${routeGenerator('default')}.json`,
+      `config/global/**/${routeGenerator('default')}.json`,
+      `config/platforms/${platform}/${routeGenerator('default')}.json`
+    ],
+    "source": [
+      `config/brands/${brand}/${routeGenerator(theme)}.json`,
+      `config/global/**/${routeGenerator(theme)}.json`,
+      `config/platforms/${platform}/${routeGenerator(theme)}.json`
+    ],
+    "platforms": {
+      "web": {
+        "transformGroup": "web",
+        "buildPath": `${outputPath}/web/${brand}/`,
+        "files": [{
+          "destination": `/scss/_config${extensionGenerator(theme)}.scss`,
+          "format": "scss/variables"
+        },
+        {
+          "destination": `/css/config${extensionGenerator(theme)}.css`,
+          "format": "css/variables"
+        },
+        {
+          "destination": `/json/config${extensionGenerator(theme)}.json`,
+          "format": "json/nested"
+        }],
+        "options": {
+          "outputReferences": true
+        }
+      },
+      "android": {
+        "transformGroup": "android",
+        "buildPath": `${outputPath}/android/${brand}/`,
+        "files": [{
+          "destination": `config.colors${extensionGenerator(theme)}.xml`,
+          "format": "android/colors"
+        }],
+        "options": {
+          "outputReferences": true
+        }
+      },
+      "ios": {
+        "transformGroup": "ios",
+        "buildPath": `${outputPath}/ios/${brand}/`,
+        "files": [{
+          "destination": `config${extensionGenerator(theme)}.h`,
+          "format": "ios/macros"
+        }],
+        "options": {
+          "outputReferences": true
+        }
+      }
+    }
+  }
+};
 
 // before this runs we should clean the directories we are generating files in
 // to make sure they are ✨clean✨
 
-console.log(`\nCleaning up the ${distPath} folder..`);
-fs.removeSync(distPath);
-console.log(`\n✨ All clean ✨\n`);
+(async () => {
 
-console.log('🔨 Build started...');
+  try {
+    console.log(`\nCleaning up the ${outputPath} folder..`);
 
-const brands = [`bilbasen`, `dba`];
-const modes = [`light`, `dark`];
+    await del(outputPath);
 
-console.log(`☀️ Building light mode...`);
-StyleDictionary.extend({
-  source: [
-    // this is saying find any files in the tokens folder
-    // that does NOT have .dark or .light, but ends in .json
-    `config/**/!(*.${modes.join(`|*.`)}).json`
-  ],
-
-  platforms: {
-    css: {
-      transformGroup: `css`,
-      buildPath: webPath,
-      files: [{
-        destination: `${distPath}/config.css`,
-        format: `css/variables`,
-        options: {
-          outputReferences: true
-        }
-      }]
-    },
-
-    js: {
-      transformGroup: `web`,
-      buildPath: webPath,
-      files: [{
-        destination: `${distPath}/config.json`,
-        format: `json/nested`
-      }]
-    },
-
-    scss: {
-      transformGroup: `web`,
-      buildPath: webPath,
-      files: [{
-        destination: `${distPath}/_config.scss`,
-        format: `scss/variables`
-      }],
-      options: {
-        outputReferences: true
-      }
-    },
-
-    iOS: {
-      transformGroup: `ios`,
-      buildPath: iosPath,
-      files: [{
-        destination: `${distPath}/config.h`,
-        format: `ios/macros`,
-        options: {
-          outputReferences: true
-        }
-      }]
-    },
-
-    android: {
-      transformGroup: `android`,
-      buildPath: androidPath,
-      files: [{
-        destination: `${distPath}/config.colors.xml`,
-        format: `android/resources`,
-        filter: (token) => token.attributes.category === `color`,
-        options: {
-          // this is important!
-          // this will keep token references intact so that we don't need
-          // to generate *all* color resources for dark mode, only
-          // the specific ones that change
-          outputReferences: true
-        }
-      }]
-    }
+    console.log(`\n✨ All clean ✨\n`);
+  } catch (err) {
+    console.error(`Error while deleting ${outputPath} folder`);
   }
-}).buildAllPlatforms();
+  console.log('🔨 Build started... 🔨');
 
-// Dark Mode
-// we will only build the files we need to, we don't need to rebuild all the files
-console.log(`\n\n🌙 Building dark mode...`);
-styleDictionary.extend({
-  // Using the include array so that theme token overrides don't show
-  // warnings in the console. 
-  include: [
-    `config/**/!(*.${modes.join(`|*.`)}).json`
-  ],
-  source: [
-    `config/**/*.dark.json`
-  ],
-  platforms: {
-    css: {
-      transformGroup: `css`,
-      buildPath: webPath,
-      files: [{
-        destination: `${distPath}/config-dark.css`,
-        format: `css/variables`,
-        // only putting in the tokens from files with '.dark' in the filepath
-        filter: (token) => token.filePath.indexOf(`.dark`) > -1,
-        options: {
-          outputReferences: true
-        }
-      }]
-    },
-  }
-}).buildAllPlatforms();
+  brands.map(function (brand) {
+    console.log('\n==============================================');
+    console.log(`\n${brand.toUpperCase()}`);
+
+    themes.map(function (theme) {
+
+      console.log(`\nBuilding the ${theme.toUpperCase()} theme...`);
+
+      platforms.map(function (platform) {
+        const StyleDictionary = StyleDictionaryPackage.extend(tokenConfig(theme, brand, platform));
+
+        StyleDictionary.buildPlatform(platform);
+      })
+    })
+  })
+  console.log('\n==============================================');
+  console.log('\nBuild completed!\n');
+
+})();

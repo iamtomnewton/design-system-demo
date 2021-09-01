@@ -26,8 +26,7 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "tokens": "cd src/tokens && node ./generator.js",
-    "tokens-theme": "cd src/tokens && node ./tokenGenerator.js"
+    "tokens": "cd src/tokens && node ./tokenGenerator.js"
   },
   "eslintConfig": {
     "extends": [
