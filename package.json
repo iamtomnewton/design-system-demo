@@ -10,6 +10,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "del": "^6.0.0",
+    "fs": "^0.0.1-security",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -25,7 +26,8 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "tokens": "cd src/tokens && node ./generator.js"
+    "tokens": "cd src/tokens && node ./generator.js",
+    "tokens-theme": "cd src/tokens && node ./tokenGenerator.js"
   },
   "eslintConfig": {
     "extends": [

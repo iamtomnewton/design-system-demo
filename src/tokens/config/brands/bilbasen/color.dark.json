@@ -4,8 +4,8 @@
       "primary": {
         "value": "#002E5C"
       },
-      "background": {
-        "value": "#000000"
+      "secondary": {
+        "value": "#202020"
       }
     }
   }
