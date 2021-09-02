@@ -13,38 +13,51 @@ function tokenConfig(theme, brand, platform) {
   const routeGenerator = (theme) => theme === 'default' ? `!(*.${themes.join(`|*.`)})` : `*.${theme}`
   const extensionGenerator = (theme) => theme === 'default' ? `` : `.${theme}`
 
-  // Include will deep merge the files only overriding the theme values
   return {
+
+    // Include will deep merge the files only overriding the theme values
+
     "include": [
       `config/brands/${brand}/${routeGenerator('default')}.json`,
       `config/global/**/${routeGenerator('default')}.json`,
       `config/platforms/${platform}/${routeGenerator('default')}.json`
     ],
+
+    // The source order is specific and controls the deep merge overrides. Brands > Global > Platforms.
+
     "source": [
       `config/brands/${brand}/${routeGenerator(theme)}.json`,
       `config/global/**/${routeGenerator(theme)}.json`,
       `config/platforms/${platform}/${routeGenerator(theme)}.json`
     ],
+
+
     "platforms": {
+
+      // 🕸 Web
+
       "web": {
         "transformGroup": "web",
         "buildPath": `${outputPath}/web/${brand}/`,
         "files": [{
-          "destination": `/scss/_config${extensionGenerator(theme)}.scss`,
+          "destination": `scss/_config${extensionGenerator(theme)}.scss`,
           "format": "scss/variables"
         },
         {
-          "destination": `/css/config${extensionGenerator(theme)}.css`,
+          "destination": `css/config${extensionGenerator(theme)}.css`,
           "format": "css/variables"
         },
         {
-          "destination": `/json/config${extensionGenerator(theme)}.json`,
+          "destination": `json/config${extensionGenerator(theme)}.json`,
           "format": "json/nested"
         }],
         "options": {
           "outputReferences": true
         }
       },
+
+      // 🤖 Android
+
       "android": {
         "transformGroup": "android",
         "buildPath": `${outputPath}/android/${brand}/`,
@@ -56,6 +69,9 @@ function tokenConfig(theme, brand, platform) {
           "outputReferences": true
         }
       },
+
+      // 🍏 IOS
+
       "ios": {
         "transformGroup": "ios",
         "buildPath": `${outputPath}/ios/${brand}/`,
@@ -71,10 +87,11 @@ function tokenConfig(theme, brand, platform) {
   }
 };
 
-// before this runs we should clean the directories we are generating files in
-// to make sure they are ✨clean✨
+// 🦾 Build function
 
 (async () => {
+
+  // ✨ Clean
 
   try {
     console.log(`\nCleaning up the ${outputPath} folder..`);
@@ -82,10 +99,17 @@ function tokenConfig(theme, brand, platform) {
     await del(outputPath);
 
     console.log(`\n✨ All clean ✨\n`);
+
+    console.log('==============================================\n');
+
   } catch (err) {
+
     console.error(`Error while deleting ${outputPath} folder`);
   }
-  console.log('🔨 Build started... 🔨');
+
+  // 👷 Build – Looping over the tokenConfig Brand > Theme > Platform.
+
+  console.log('👷 Build started... 👷');
 
   brands.map(function (brand) {
     console.log('\n==============================================');
@@ -103,6 +127,6 @@ function tokenConfig(theme, brand, platform) {
     })
   })
   console.log('\n==============================================');
-  console.log('\nBuild completed!\n');
+  console.log('\n🥳 Build completed! 🥳\n');
 
 })();
