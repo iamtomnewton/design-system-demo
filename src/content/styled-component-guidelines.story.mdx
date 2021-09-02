@@ -1,0 +1,60 @@
+import { Meta } from "@storybook/addon-docs/blocks"
+
+<Meta title="For Developers/StyledComponents Guidelines" />
+
+# styled-components Guidelines
+
+`styled-components` have documentation you can view [here](https://styled-components.com/docs). That documentation will cover how to best use `styled-components`, but below is a guide on how ATDS is using it.
+
+## ThemeProvider
+
+styled-components uses React's [Context](https://reactjs.org/docs/context.html) provider to pass down a `theme` object. This `theme` provides a mapping of the base styles provided by ATDS's Design Tokens, i.e. `colors`, `padding`, etc.
+
+The reason for this is now each `styled-component` has access to those styles without having to import anything manually.
+
+### ThemeProvider example
+
+```javascript
+import styled, { ThemeProvider } from 'styled-components'
+import { atdsTheme } from '@at/design-system-foundation'
+import { ThemeSelectors } from '@at/design-system-foundation'
+
+// 'theme' is atdsTheme
+const Box = styled.div`
+  color: `${({ theme }) => ThemeSelectors.getBlue(theme)}`;
+`;
+
+render(
+  <ThemeProvider theme={atdsTheme}>
+    <Box>I'm a child component with access to ATDSTheme!</Box>
+  </ThemeProvider>
+);
+```
+
+**Note:** all children of `<ThemeProvide>` has access to the theme it provides.
+
+**Note:** `ThemeSelectors` are used to safely get `theme` values, see [readme.md](https://github.atcloud.io/AutoTrader/design-system/tree/master/packages/design-system-foundation/src/selectors#theme-selectors) for more information.
+
+---
+
+## Getting types for TypeScript
+
+`design-system-foundation` exports a `styled.d.ts` file which will provide the TypeScript types for the ATDS theme. This means that while you're writing the CSS for the styled-component, it will give instant feedback/IntellSense/autocomplete to everything inside that theme object.
+
+### importing styled.d.ts
+
+**NOTE** We should find a better approach to this, but for now, this seems to work.
+
+In the root of your app, create a `styled.d.ts` file, and paste in the following code. This should allow your local `styled.d.ts` to use the theme types exported from ATDS and allow you to extend if necessary.
+
+```javascript
+// styled.d.ts
+
+import 'styled-components'
+import { DefaultTheme as Theme } from '@at/design-system-tokens/dist/styles'
+
+declare module "styled-components" {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface DefaultTheme extends Theme {}
+}
+```

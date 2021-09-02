@@ -11,7 +11,6 @@
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.13",
     "del": "^6.0.0",
-    "fs": "^0.0.1-security",
     "quicktype": "^15.0.260",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -22,9 +21,11 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "start-storybook -p 6006 -s public",
-    "build": "build-storybook -s public",
-    "tokens": "cd src/tokens && node ./tokenGenerator.js && quicktype dist/web/**/**/*.json -o dist/styles.d.ts --just-types --top-level DefaultTheme"
+    "start": "yarn tokens && start-storybook -p 6006 -s public",
+    "build": "yarn tokens && build-storybook -s public",
+    "tokens": "cd src/tokens && node ./tokenGenerator.js && quicktype dist/web/**/**/*.json -o dist/styles.d.ts --just-types --top-level DefaultTheme",
+    "generateBilbasenThemeType": "quicktype dist/web/**/**/*.json -o dist/bilbasenTheme.d.ts --just-types --top-level BilbasenTheme",
+    "generateDBAThemeType": "quicktype dist/web/**/**/*.json -o dist/dbaTheme.d.ts --just-types --top-level DBATheme"
   },
   "eslintConfig": {
     "extends": [

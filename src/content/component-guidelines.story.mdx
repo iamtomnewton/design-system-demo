@@ -1,0 +1,89 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="For Developers/Component Guidelines" />
+
+# Component Guidelines
+
+For each Component, we need to consider and adhere to a consistent approach.
+
+This is to provide the developers with components that are:
+
+- Easy-to-use, predictable
+- Flexible enough to not hinder the developer
+- Considered for their true purpose in helping users interact with the site (inc. `a11y`)
+
+## Example File Structure
+
+## <img src="https://github.atcloud.io/storage/user/425/files/7ba7f300-80bd-11ea-9608-5a32903978dc" width="200" alt="" />
+
+## Component props
+
+- **'primary props'** - the main props required to run the component
+- **additionalClass** - _optional_ - A string which will add class names to the component (just needs to be present, make sense, and consistent)
+- **attributes** - _optional_ - Native attributes the element will accept - this gets spread to `{...attributes}`), this will also accept `data-attributes` and `aria--attributes`
+- **onInteraction** - _optional_ - An optional utility function that is useful for bundling multiple events into one, i.e. one place to handle both `onClick` and `onKeyUp` events.
+
+## Component considerations
+
+- **UI Skeletons** - If the component is bulky, we should use React's lazy and Suspense to easily lazy load the component. While this loads, we should show the UI Skeleton (with a 'loading' animation) to show the user the structure of the content they are expecting - re: [skeleton screens](https://uxdesign.cc/what-you-should-know-about-skeleton-screens-a820c45a571a)
+- **Loading states** - reuse UI Skeletons where possible when the component is fetching/loading data
+- **forwardRefs** - Some components may need to get their refs from the parent (i.e. Inputs may need to keep their focus on rerenders)
+- **Print styles** - Some components have hidden content (i.e. accordion) so print styles need to make this hidden content available
+
+## Design System considerations
+
+- **.types.ts** - Types kept in a different file to keep things tidy (ideally any file's content should be visible without scrolling)
+- **.test.tsx** Jest tests to make sure the functionality of the component is working (and will keep working)
+- **.story.mdx** A story (in .mdx format) about the component which includes all the information required to understand the component, what it's for, and how to use it. Using `withKnobs` in Storybook is a good visual way of letting developers know what happens when props change
+- **.styled.tsx** - If the component uses `styled-components` it should include a `.styled.tsx` file to include all the styles instead of a `.scss` file.
+- **Named exports** preferred over default exports, i.e. `export const MyComponent = () => ...`
+- **Naming Props** preferred to use `ComponentProps` when naming PropTypes, i.e. `export const MyComponent = ({blah}: MyComponentProps) => () ...`
+
+---
+
+## Handling Events
+
+Each component may need to handle specific events, so components need to be flexible enough to allow this.
+
+### Spreading Events via attributes
+
+The most flexible approach is to pass individual events into the `attributes` property. This is flexible, but requires the developer to complete more legwork on each instance - in the past, this has lead to keyboard events being missed from components.
+
+```javascript
+<Component attributes={{onClick: () => handleClick(), onKeyUp: handleKeyUp(), onBlur: handleBlur()} ../>
+```
+
+### Bundling common events via onInteraction
+
+For ease of use, we can also use `onInteraction` to bundle together events which need to be handled the same way, i.e. `onClick` or `onKeyUp` on an accordionRow component. The benefit of this approach is the legwork is done inside the component and the developer need only consider what to do when onInteraction event fires.
+
+**Initialising the Component**
+
+```javascript
+<Component onInteraction={(data: string) => console.log(data)} ../>
+```
+
+**Inside the component**
+
+```javascript
+const Component = ({ onInteraction }) => (
+  <section
+    {...(onInteraction && {
+      onClick: () => onInteraction(data),
+      onKeyUp: (e) => onKeyPressEnterOrSpace(e, () => onInteraction(data)),
+    })}
+  >
+    Content Here
+  </section>
+);
+```
+
+**Note:** when creating types for `onInteraction` you should use the `HandleFn` type util available from `@at/design-system-elements`. i.e.
+
+```javascript
+import { HandleFn } from "@at/design-system-elements";
+
+export interface MyInterface {
+  onInteraction: HandlerFn;
+}
+```
