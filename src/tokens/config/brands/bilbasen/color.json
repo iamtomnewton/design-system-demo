@@ -6,6 +6,9 @@
       },
       "secondary": {
         "value": "#002E5C"
+      },
+      "testValue": {
+        "value": "#000"
       }
     }
   }

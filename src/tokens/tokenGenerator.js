@@ -6,12 +6,12 @@ const brands = [`bilbasen`, `dba`];
 const platforms = ['web', 'ios', 'android'];
 const themes = [`default`, `dark`];
 
+const routeGenerator = (theme) => theme === 'default' ? `!(*.${themes.join(`|*.`)})` : `*.${theme}`
+const extensionGenerator = (theme) => theme === 'default' ? `` : `.${theme}`
+
 // HAVE THE STYLE DICTIONARY CONFIG DYNAMICALLY GENERATED
 
 function tokenConfig(theme, brand, platform) {
-
-  const routeGenerator = (theme) => theme === 'default' ? `!(*.${themes.join(`|*.`)})` : `*.${theme}`
-  const extensionGenerator = (theme) => theme === 'default' ? `` : `.${theme}`
 
   return {
 
@@ -31,9 +31,7 @@ function tokenConfig(theme, brand, platform) {
       `config/platforms/${platform}/${routeGenerator(theme)}.json`
     ],
 
-
     "platforms": {
-
       // 🕸 Web
 
       "web": {
@@ -83,7 +81,8 @@ function tokenConfig(theme, brand, platform) {
           "outputReferences": true
         }
       }
-    }
+    },
+
   }
 };
 

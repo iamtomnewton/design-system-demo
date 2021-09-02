@@ -6,6 +6,9 @@
       },
       "secondary": {
         "value": "#000"
+      },
+      "darkTest": {
+        "value": "#000"
       }
     }
   }
