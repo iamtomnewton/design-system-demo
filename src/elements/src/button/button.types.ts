@@ -1,3 +1,4 @@
 export interface ButtonTypes {
-    text: string
+    label: 'string',
+    displayType: 'primary' | 'secondary'
 }

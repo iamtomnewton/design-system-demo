@@ -65,4 +65,5 @@ const withThemeProvider = (Story, context) => {
     </ThemeProvider>
   )
 }
+
 export const decorators = [withThemeProvider];

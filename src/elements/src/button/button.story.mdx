@@ -1,14 +1,60 @@
-<!-- Button.stories.mdx-->
-
-import { Meta, Story } from '@storybook/addon-docs';
+import { Meta, Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
 import { Button } from "./button.tsx";
-import { ButtonProps } from './button.types.ts';
 
-<Meta title="Elements/Button" />
+<Meta title="Elements/Button" component={Button} />
+
+export const Template = (args) => <Button {...args}/>
 
 # Button
 
-<Story name="Primary">
-  <Button text="My button"/>
-</Story>
+## Summary 
+
+The button component helps users to carry out an action. At this point in their journey, users are often making a choice. 
+
+You'll often find them throughout the UI in places like:
+
+* Landing pages
+* FPAs
+* Onboarding journeys
+* Forms
+* Modals
+* Cards
+
+You can place icons next to text labels to both clarify an action and call attention to a button. Use icons that clearly communicate their meaning.
+
+## Examples
+
+### Primary button
+
+Primary buttons should only appear __once__ per container / component scope. But can appear more than once per page depending on the context of use.
+
+<Canvas>
+  <Story 
+    name="Primary"
+    args={{ 
+      label: 'Primary button',
+      displayType: 'primary',
+  }}>
+  {Template.bind({})}
+  </Story>
+</Canvas>
+
+### Secondary button
+
+Use secondary buttons for the next most important actions. If you find you are adding multiple secondary buttons to a screen, it could be a sign that you should simplify the page or break the content down across multiple pages.
+
+<Canvas>
+  <Story 
+    name="Secondary"
+    args={{ 
+      label: 'Secondary button',
+      displayType: 'secondary',
+  }}>
+  {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Props
+
+<ArgsTable of={Button} />
