@@ -15,3 +15,5 @@ export const dbaTheme: DefaultTheme = dba
 // 🌜 Dark themes decleration
 export const bilbasenDarkTheme: DefaultTheme = bilbasenDark
 export const dbaDarkTheme: DefaultTheme = dbaDark
+
+export const themes = [bilbasenTheme, bilbasenDarkTheme, dbaTheme, dbaDarkTheme]
