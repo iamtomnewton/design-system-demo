@@ -1,25 +1,18 @@
 {
   "name": "@iamtomnewton/design-system-demo",
   "version": "0.1.0",
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "@types/styled-components": "^5.1.13",
-    "del": "^6.0.0",
-    "quicktype": "^15.0.260",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "style-dictionary": "^3.0.2",
-    "styled-components": "^5.3.1",
-    "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "./src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamtomnewton/design-system-demo.git"
   },
+  "author": "Tom Newton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iamtomnewton/design-system-demo/issues"
+  },
+  "homepage": "https://github.com/iamtomnewton/design-system-demo#readme",
   "scripts": {
     "start": "yarn tokens && start-storybook -p 6006 -s public",
     "build": "yarn tokens && build-storybook -s public",
@@ -54,6 +47,25 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/styled-components": "^5.1.13",
+    "del": "^6.0.0",
+    "quicktype": "^15.0.260",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "style-dictionary": "^3.0.2",
+    "styled-components": "^5.3.1",
+    "typescript": "^4.1.2",
+    "web-vitals": "^1.0.1"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^6.3.7",
